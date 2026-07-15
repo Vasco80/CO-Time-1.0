@@ -1,148 +1,174 @@
-/*
-=========================================================
- CO-Time
- Versione : 1.0.0
- File     : style.css
- Parte    : 1/10
-=========================================================
-*/
-
-/* ======================================================
-   RESET
-====================================================== */
-
-*,
-*::before,
-*::after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+:root {
+  color-scheme: dark;
+  --bg: #000000;
+  --text: #ffffff;
+  --border: rgba(255, 255, 255, 0.15);
+  --panel: rgba(255, 255, 255, 0.04);
+  --green: #00d84a;
+--yellow: #ffd400;
+--orange: #ff8c00;
+--red: #ff0000;
 }
 
-/* ======================================================
-   ROOT
-====================================================== */
-
-:root{
-
-    --bg:#000000;
-    --fg:#ffffff;
-
-    --green:#00d84a;
-    --yellow:#ffd400;
-    --orange:#ff8c00;
-    --red:#ff0000;
-
-    --flash:#ffffff;
-
-    --transition:200ms linear;
-
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ======================================================
-   HTML
-====================================================== */
-
-html{
-
-    width:100%;
-    height:100%;
-
-    overflow:hidden;
-
-    -webkit-text-size-adjust:100%;
-
-    touch-action:manipulation;
-
+html,
+body {
+  height: 100%;
 }
 
-/* ======================================================
-   BODY
-====================================================== */
-
-body{
-
-    width:100%;
-    height:100%;
-
-    overflow:hidden;
-
-    background:var(--bg);
-
-    color:var(--fg);
-
-    font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
-    font-variant-numeric:tabular-nums;
-    font-feature-settings:"tnum";
-
-    user-select:none;
-
-    -webkit-user-select:none;
-
-    -webkit-touch-callout:none;
-
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  overflow: hidden;
+user-select: none;
+-webkit-user-select: none;
+-webkit-touch-callout: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 3vw, 28px);
+  padding-top: calc(clamp(14px, 3vw, 28px) + env(safe-area-inset-top));
+  padding-bottom: calc(clamp(14px, 3vw, 28px) + env(safe-area-inset-bottom));
 }
 
-/* ======================================================
-   SCHERMATE
-====================================================== */
-
-main{
-
-    position:fixed;
-
-    inset:0;
-
-    width:100vw;
-
-    height:100vh;
-
-    background:var(--bg);
-
+#setupScreen {
+  width: min(100%, 860px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 3vw, 30px);
 }
 
-main[hidden]{
-
-    display:none !important;
-
+h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 8vw, 4.8rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.05;
 }
 
-/* ======================================================
-   ELEMENTI BASE
-====================================================== */
-
-button,
-input{
-
-    font:inherit;
-
+#coInputs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vw, 14px);
 }
 
-button{
-
-    cursor:pointer;
-
+.coRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.6vw, 14px);
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2.4vw, 16px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button{
-
-    -webkit-appearance:none;
-
-    margin:0;
-
+.coRow span {
+  font-size: clamp(1rem, 3vw, 1.45rem);
+  font-weight: 600;
+  min-width: 2.4rem;
+  text-align: center;
 }
 
-input[type=number]{
+.coRow input {
+  flex: 1;
+  min-height: 70px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #111111;
+  color: var(--text);
+  font-size: clamp(1.1rem, 3.2vw, 1.8rem);
+  font-weight: 600;
+  text-align: center;
+  padding: 0 10px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
 
-    appearance:textfield;
-    -moz-appearance:textfield;
+.coRow input::placeholder {
+  color: #7a7a7a;
+}
 
+.coRow input:focus {
+  border-color: #ffffff;
+}
+
+.coRow input::-webkit-outer-spin-button,
+.coRow input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#startButton {
+  width: 100%;
+  min-height: 80px;
+  border: none;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #000000;
+  font-size: clamp(1.3rem, 3.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 14px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+
+  .coRow {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .coRow span {
+    min-width: 2rem;
+  }
+
+  .coRow input {
+    min-height: 50px;
+    font-size: 1.05rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  body {
+    align-items: flex-start;
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+
+  #setupScreen {
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 4.6vw, 2.7rem);
+  }
+
+  .coRow {
+    padding: 8px 10px;
+  }
+
+  .coRow input {
+    min-height: 42px;
+  }
 }

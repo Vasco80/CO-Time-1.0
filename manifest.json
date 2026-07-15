@@ -1,0 +1,10 @@
+{
+  "name": "CO-Time",
+  "short_name": "CO-Time",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "any",
+  "icons": []
+}
