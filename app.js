@@ -218,6 +218,23 @@ function showCurrentCheckpoint() {
   coTimeElement.textContent = `${String(checkpoint.hour).padStart(2, '0')}:${String(checkpoint.minute).padStart(2, '0')}:${String(checkpoint.second).padStart(2, '0')}`;
 }
 
+function finishMission() {
+  appState = 'FINISHED';
+
+  if (runScreen) {
+    runScreen.hidden = true;
+  }
+
+  if (finishScreen) {
+    finishScreen.hidden = false;
+  }
+
+  if (progressElement) {
+    progressElement.style.width = '0%';
+    progressElement.style.backgroundColor = '';
+  }
+}
+
 function nextCheckpoint() {
   if (checkpoints.length === 0) {
     return;
@@ -244,16 +261,40 @@ function nextCheckpoint() {
   }, 150);
 }
 
-function finishMission() {
-  appState = 'FINISHED';
+function resetMission() {
+  if (setupScreen) {
+    setupScreen.hidden = false;
+  }
 
   if (runScreen) {
     runScreen.hidden = true;
   }
 
   if (finishScreen) {
-    finishScreen.hidden = false;
+    finishScreen.hidden = true;
   }
+
+  for (let index = 1; index <= 6; index += 1) {
+    const hourInput = document.getElementById(`co${index}hh`);
+    const minuteInput = document.getElementById(`co${index}mm`);
+    const secondInput = document.getElementById(`co${index}ss`);
+
+    if (hourInput) {
+      hourInput.value = '';
+    }
+
+    if (minuteInput) {
+      minuteInput.value = '';
+    }
+
+    if (secondInput) {
+      secondInput.value = '';
+    }
+  }
+
+  checkpoints = [];
+  currentCheckpointIndex = 0;
+  appState = 'SETUP';
 
   if (countdownElement) {
     countdownElement.textContent = '00:00.00';
@@ -271,13 +312,16 @@ function finishMission() {
     progressElement.style.width = '0%';
     progressElement.style.backgroundColor = '';
   }
-
-  checkpoints = [];
-  currentCheckpointIndex = 0;
 }
 
 if (startButton) {
   startButton.addEventListener('click', startMission);
+}
+
+const resetButton = document.getElementById('resetButton');
+
+if (resetButton) {
+  resetButton.addEventListener('click', resetMission);
 }
 
 startClock();
