@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+
+    <title>CO-Time</title>
+
+    <meta name="theme-color" content="#000000">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CO-Time">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- CONFIGURAZIONE -->
+    <!-- ========================= -->
+
+    <main id="setupScreen">
+
+        <h1>CO-Time</h1>
+
+        <div id="coInputs">
+
+            <div class="coRow">
+                <span>CO1</span>
+                <input id="co1hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co1mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co1ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+            <div class="coRow">
+                <span>CO2</span>
+                <input id="co2hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co2mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co2ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+            <div class="coRow">
+                <span>CO3</span>
+                <input id="co3hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co3mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co3ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+            <div class="coRow">
+                <span>CO4</span>
+                <input id="co4hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co4mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co4ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+            <div class="coRow">
+                <span>CO5</span>
+                <input id="co5hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co5mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co5ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+            <div class="coRow">
+                <span>CO6</span>
+                <input id="co6hh" type="number" min="0" max="23" placeholder="HH">
+                <span>:</span>
+                <input id="co6mm" type="number" min="0" max="59" placeholder="MM">
+                <span>:</span>
+                <input id="co6ss" type="number" min="0" max="59" placeholder="SS">
+            </div>
+
+        </div>
+
+        <button id="startButton">
+            START
+        </button>
+
+    </main>
+
+    <!-- ========================= -->
+    <!-- OPERATIVA -->
+    <!-- ========================= -->
+
+ <main id="runScreen" hidden>
+
+    <div id="progress"></div>
+
+    <div id="flash"></div>
+
+    <div class="display">
+
+        <div id="clock">
+            00:00:00.00
+        </div>
+
+        <div id="coLabel">
+            CO 1/1
+        </div>
+
+        <div id="coTime">
+            00:00:00
+        </div>
+
+        <div id="countdown">
+            00:00.00
+        </div>
+
+    </div>
+
+</main>
+
+    <!-- ========================= -->
+    <!-- FINE -->
+    <!-- ========================= -->
+
+    <main id="finishScreen" hidden>
+
+        <div id="finishTitle">
+            MISSIONE COMPLETATA
+        </div>
+
+        <div id="finishClock">
+            00:00:00.00
+        </div>
+
+        <button id="resetButton">
+            RESET
+        </button>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

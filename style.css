@@ -1,0 +1,148 @@
+/*
+=========================================================
+ CO-Time
+ Versione : 1.0.0
+ File     : style.css
+ Parte    : 1/10
+=========================================================
+*/
+
+/* ======================================================
+   RESET
+====================================================== */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* ======================================================
+   ROOT
+====================================================== */
+
+:root{
+
+    --bg:#000000;
+    --fg:#ffffff;
+
+    --green:#00d84a;
+    --yellow:#ffd400;
+    --orange:#ff8c00;
+    --red:#ff0000;
+
+    --flash:#ffffff;
+
+    --transition:200ms linear;
+
+}
+
+/* ======================================================
+   HTML
+====================================================== */
+
+html{
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    -webkit-text-size-adjust:100%;
+
+    touch-action:manipulation;
+
+}
+
+/* ======================================================
+   BODY
+====================================================== */
+
+body{
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:var(--bg);
+
+    color:var(--fg);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum";
+
+    user-select:none;
+
+    -webkit-user-select:none;
+
+    -webkit-touch-callout:none;
+
+}
+
+/* ======================================================
+   SCHERMATE
+====================================================== */
+
+main{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100vw;
+
+    height:100vh;
+
+    background:var(--bg);
+
+}
+
+main[hidden]{
+
+    display:none !important;
+
+}
+
+/* ======================================================
+   ELEMENTI BASE
+====================================================== */
+
+button,
+input{
+
+    font:inherit;
+
+}
+
+button{
+
+    cursor:pointer;
+
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+
+    -webkit-appearance:none;
+
+    margin:0;
+
+}
+
+input[type=number]{
+
+    appearance:textfield;
+    -moz-appearance:textfield;
+
+}
