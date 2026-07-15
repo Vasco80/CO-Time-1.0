@@ -13,6 +13,118 @@ let checkpoints = [];
 let currentCheckpointIndex = 0;
 let appState = 'SETUP';
 let currentTargetTimestamp = 0;
+let checkpointInputFields = [];
+
+function setFieldInvalid(field) {
+  field.style.borderColor = '#ff4d4f';
+  field.style.boxShadow = '0 0 0 2px rgba(255, 77, 79, 0.2)';
+
+  if (field.invalidTimer) {
+    clearTimeout(field.invalidTimer);
+  }
+
+  field.invalidTimer = setTimeout(() => {
+    field.style.borderColor = '';
+    field.style.boxShadow = '';
+  }, 600);
+}
+
+function clearFieldInvalid(field) {
+  if (field.invalidTimer) {
+    clearTimeout(field.invalidTimer);
+  }
+
+  field.style.borderColor = '';
+  field.style.boxShadow = '';
+}
+
+function configureCheckpointInput(field) {
+  field.setAttribute('inputmode', 'numeric');
+  field.setAttribute('pattern', '[0-9]*');
+  field.setAttribute('autocomplete', 'off');
+  field.setAttribute('maxlength', '2');
+
+  field.addEventListener('input', (event) => {
+    const target = event.target;
+    const value = target.value.replace(/\D/g, '').slice(0, 2);
+
+    target.value = value;
+
+    if (!value) {
+      clearFieldInvalid(target);
+      return;
+    }
+
+    const suffix = target.id.slice(-2);
+    const numericValue = Number.parseInt(value, 10);
+    const isValid = suffix === 'hh'
+      ? numericValue >= 0 && numericValue <= 23
+      : numericValue >= 0 && numericValue <= 59;
+
+    if (!isValid) {
+      setFieldInvalid(target);
+      return;
+    }
+
+    clearFieldInvalid(target);
+
+    if (value.length === 2) {
+      const currentIndex = checkpointInputFields.indexOf(target);
+      const nextField = checkpointInputFields[currentIndex + 1];
+
+      if (nextField) {
+        nextField.focus();
+        nextField.select();
+      }
+    }
+  });
+
+  field.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const currentIndex = checkpointInputFields.indexOf(target);
+    const previousField = checkpointInputFields[currentIndex - 1];
+    const nextField = checkpointInputFields[currentIndex + 1];
+
+    if (event.key === 'Backspace' && target.value === '') {
+      event.preventDefault();
+      if (previousField) {
+        previousField.focus();
+        previousField.select();
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowRight' || event.key === 'Enter') {
+      event.preventDefault();
+      if (nextField) {
+        nextField.focus();
+        nextField.select();
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      if (previousField) {
+        previousField.focus();
+        previousField.select();
+      }
+    }
+  });
+
+  field.addEventListener('focus', () => {
+    field.select();
+  });
+
+  field.addEventListener('blur', () => {
+    clearFieldInvalid(field);
+  });
+}
+
+function initCheckpointInputs() {
+  checkpointInputFields = Array.from(document.querySelectorAll('input[id$="hh"], input[id$="mm"], input[id$="ss"]'));
+  checkpointInputFields.forEach(configureCheckpointInput);
+}
 
 function formatClock(now) {
   const hours = String(now.getHours()).padStart(2, '0');
@@ -319,4 +431,6 @@ if (resetButton) {
   resetButton.addEventListener('click', resetMission);
 }
 
+initCheckpointInputs();
+resetMission();
 startClock();

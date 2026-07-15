@@ -199,20 +199,23 @@ h1 {
 }
 
 #clock {
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(4rem, 16vw, 9rem);
     font-weight: 700;
+    text-align: center;
 }
 
 #coLabel {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-size: clamp(0.9rem, 2vw, 1.4rem);
+    font-weight: 600;
+    letter-spacing: 0.15em;
 }
 
 #coTime {
-    font-size: clamp(2rem, 6vw, 4rem);
+    font-size: clamp(2rem, 6vw, 3.5rem);
 }
 
 #countdown {
-    font-size: clamp(3rem, 10vw, 7rem);
+    font-size: clamp(2.8rem, 8vw, 5rem);
     font-weight: 700;
 }
 
