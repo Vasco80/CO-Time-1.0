@@ -12,6 +12,7 @@ const finishScreen = document.getElementById('finishScreen');
 let checkpoints = [];
 let currentCheckpointIndex = 0;
 let appState = 'SETUP';
+let currentTargetTimestamp = 0;
 
 function formatClock(now) {
   const hours = String(now.getHours()).padStart(2, '0');
@@ -49,6 +50,17 @@ function updateProgress(remainingMs) {
   progressElement.style.backgroundColor = `hsl(${hue}, 90%, 50%)`;
 }
 
+function buildTargetTimestamp(hour, minute, second) {
+  const target = new Date();
+  target.setHours(hour, minute, second, 0);
+
+  if (target.getTime() <= Date.now()) {
+    target.setDate(target.getDate() + 1);
+  }
+
+  return target.getTime();
+}
+
 function updateCountdown() {
   if (!countdownElement || appState !== 'RUNNING') {
     return;
@@ -64,45 +76,15 @@ function updateCountdown() {
     return;
   }
 
-  const now = new Date();
-  const currentTime = now.getTime();
-  let targetTime = new Date(now);
-  targetTime.setHours(checkpoint.hour, checkpoint.minute, checkpoint.second, 0);
-
-  if (targetTime.getTime() <= currentTime) {
-    const sameDayTime = new Date(targetTime.getTime());
-    const nextDayTime = new Date(targetTime.getTime());
-    nextDayTime.setDate(nextDayTime.getDate() + 1);
-
-    const sameDayDelta = currentTime - sameDayTime.getTime();
-    const nextDayDelta = currentTime - nextDayTime.getTime();
-
-    if (sameDayDelta >= -100 && sameDayDelta <= 100) {
-      countdownElement.textContent = '00:00.00';
-      if (appState === 'RUNNING') {
-        nextCheckpoint();
-      }
-      return;
-    }
-
-    if (nextDayDelta < 0) {
-      targetTime = nextDayTime;
-    } else {
-      countdownElement.textContent = '00:00.00';
-      if (appState === 'RUNNING') {
-        nextCheckpoint();
-      }
-      return;
-    }
-  }
-
-  let remainingMs = targetTime.getTime() - currentTime;
+  const remainingMs = currentTargetTimestamp - Date.now();
 
   if (remainingMs <= 0) {
-    countdownElement.textContent = '00:00.00';
-    if (appState === 'RUNNING') {
+    if (!checkpoint.triggered) {
+      checkpoint.triggered = true;
       nextCheckpoint();
     }
+
+    countdownElement.textContent = '00:00.00';
     return;
   }
 
@@ -173,7 +155,8 @@ function readCheckpoints() {
       hour,
       minute,
       second,
-      totalSeconds: hour * 3600 + minute * 60 + second,
+      targetTimestamp: buildTargetTimestamp(hour, minute, second),
+      triggered: false,
     });
   }
 }
@@ -216,6 +199,42 @@ function showCurrentCheckpoint() {
 
   coLabelElement.textContent = `CO ${currentCheckpointIndex + 1}/${checkpoints.length}`;
   coTimeElement.textContent = `${String(checkpoint.hour).padStart(2, '0')}:${String(checkpoint.minute).padStart(2, '0')}:${String(checkpoint.second).padStart(2, '0')}`;
+
+  currentTargetTimestamp = checkpoint.targetTimestamp;
+
+  if (progressElement) {
+    progressElement.style.width = '0%';
+    progressElement.style.backgroundColor = '#00ff00';
+  }
+}
+
+function nextCheckpoint() {
+  if (appState !== 'RUNNING') {
+    return;
+  }
+
+  appState = 'TRANSITION';
+
+  if (flashElement) {
+    flashElement.classList.remove('flashOn');
+    void flashElement.offsetWidth;
+    flashElement.classList.add('flashOn');
+  }
+
+  setTimeout(() => {
+    if (flashElement) {
+      flashElement.classList.remove('flashOn');
+    }
+
+    currentCheckpointIndex += 1;
+
+    if (currentCheckpointIndex < checkpoints.length) {
+      showCurrentCheckpoint();
+      appState = 'RUNNING';
+    } else {
+      finishMission();
+    }
+  }, 150);
 }
 
 function finishMission() {
@@ -235,33 +254,9 @@ function finishMission() {
   }
 }
 
-function nextCheckpoint() {
-  if (checkpoints.length === 0) {
-    return;
-  }
-
-  if (flashElement) {
-    flashElement.classList.remove('flashOn');
-    void flashElement.offsetWidth;
-    flashElement.classList.add('flashOn');
-  }
-
-  setTimeout(() => {
-    if (flashElement) {
-      flashElement.classList.remove('flashOn');
-    }
-
-    currentCheckpointIndex += 1;
-
-    if (currentCheckpointIndex < checkpoints.length) {
-      showCurrentCheckpoint();
-    } else {
-      finishMission();
-    }
-  }, 150);
-}
-
 function resetMission() {
+  appState = 'SETUP';
+
   if (setupScreen) {
     setupScreen.hidden = false;
   }
@@ -294,7 +289,7 @@ function resetMission() {
 
   checkpoints = [];
   currentCheckpointIndex = 0;
-  appState = 'SETUP';
+  currentTargetTimestamp = 0;
 
   if (countdownElement) {
     countdownElement.textContent = '00:00.00';
