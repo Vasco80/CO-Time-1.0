@@ -171,4 +171,77 @@ h1 {
   .coRow input {
     min-height: 42px;
   }
+}/* ===================================== */
+/* SCHERMATA OPERATIVA */
+/* ===================================== */
+
+#runScreen,
+#finishScreen {
+    width: min(100%, 900px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#runScreen[hidden],
+#finishScreen[hidden] {
+    display: none !important;
+}
+
+.display {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#clock {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+}
+
+#coLabel {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+#coTime {
+    font-size: clamp(2rem, 6vw, 4rem);
+}
+
+#countdown {
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 700;
+}
+
+#progress {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--green);
+    z-index: -1;
+    transition: none;
+}
+
+#flash {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: opacity 0.08s linear;
+}
+
+#flash.flashOn {
+    opacity: 0.65;
+}
+#setupScreen[hidden],
+#runScreen[hidden],
+#finishScreen[hidden] {
+    display: none !important;
 }

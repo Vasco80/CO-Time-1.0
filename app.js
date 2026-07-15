@@ -227,18 +227,21 @@ function nextCheckpoint() {
     flashElement.classList.remove('flashOn');
     void flashElement.offsetWidth;
     flashElement.classList.add('flashOn');
-    setTimeout(() => {
+  }
+
+  setTimeout(() => {
+    if (flashElement) {
       flashElement.classList.remove('flashOn');
-    }, 150);
-  }
+    }
 
-  currentCheckpointIndex += 1;
+    currentCheckpointIndex += 1;
 
-  if (currentCheckpointIndex < checkpoints.length) {
-    showCurrentCheckpoint();
-  } else {
-    finishMission();
-  }
+    if (currentCheckpointIndex < checkpoints.length) {
+      showCurrentCheckpoint();
+    } else {
+      finishMission();
+    }
+  }, 150);
 }
 
 function finishMission() {
