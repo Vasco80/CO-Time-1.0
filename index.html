@@ -36,7 +36,7 @@
     <!-- CONFIGURAZIONE -->
     <!-- ========================= -->
 
-    <main id="setupScreen">
+    <main id="setupScreen" hidden>
 
         <h1>CO-Time</h1>
 
@@ -108,7 +108,7 @@
     <!-- OPERATIVA -->
     <!-- ========================= -->
 
- <main id="runScreen" hidden>
+ <main id="runScreen">
 
     <div id="progress"></div>
 
@@ -120,16 +120,23 @@
             00:00:00.00
         </div>
 
+        <div id="homeControls">
+            <button id="homeCoButton" type="button" aria-label="Apri setup CO">CO</button>
+            <div id="countdown" class="homeCountdown" hidden>
+                00:00.00
+            </div>
+        </div>
+
+    </div>
+
+    <div class="display operational" hidden>
+
         <div id="coLabel">
             CO 1/1
         </div>
 
         <div id="coTime">
             00:00:00
-        </div>
-
-        <div id="countdown">
-            00:00.00
         </div>
 
     </div>

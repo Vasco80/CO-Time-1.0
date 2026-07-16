@@ -8,6 +8,8 @@ const startButton = document.getElementById('startButton');
 const setupScreen = document.getElementById('setupScreen');
 const runScreen = document.getElementById('runScreen');
 const finishScreen = document.getElementById('finishScreen');
+const homeButton = document.getElementById('homeCoButton');
+const STORAGE_KEY = 'co-time-checkpoints';
 
 let checkpoints = [];
 let currentCheckpointIndex = 0;
@@ -49,6 +51,7 @@ function configureCheckpointInput(field) {
     const value = target.value.replace(/\D/g, '').slice(0, 2);
 
     target.value = value;
+    saveCheckpointInputsToStorage();
 
     if (!value) {
       clearFieldInvalid(target);
@@ -118,7 +121,66 @@ function configureCheckpointInput(field) {
 
   field.addEventListener('blur', () => {
     clearFieldInvalid(field);
+    saveCheckpointInputsToStorage();
   });
+}
+
+function saveCheckpointInputsToStorage() {
+  const checkpointValues = [];
+
+  for (let index = 1; index <= 6; index += 1) {
+    const hourInput = document.getElementById(`co${index}hh`);
+    const minuteInput = document.getElementById(`co${index}mm`);
+    const secondInput = document.getElementById(`co${index}ss`);
+
+    checkpointValues.push({
+      hour: hourInput ? hourInput.value : '',
+      minute: minuteInput ? minuteInput.value : '',
+      second: secondInput ? secondInput.value : '',
+    });
+  }
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(checkpointValues));
+  } catch (error) {
+    console.warn('Unable to save checkpoints', error);
+  }
+}
+
+function loadCheckpointInputsFromStorage() {
+  try {
+    const savedValue = localStorage.getItem(STORAGE_KEY);
+
+    if (!savedValue) {
+      return;
+    }
+
+    const parsedValue = JSON.parse(savedValue);
+
+    if (!Array.isArray(parsedValue)) {
+      return;
+    }
+
+    parsedValue.forEach((checkpoint, index) => {
+      const hourInput = document.getElementById(`co${index + 1}hh`);
+      const minuteInput = document.getElementById(`co${index + 1}mm`);
+      const secondInput = document.getElementById(`co${index + 1}ss`);
+
+      if (hourInput) {
+        hourInput.value = checkpoint && checkpoint.hour !== undefined && checkpoint.hour !== null ? String(checkpoint.hour) : '';
+      }
+
+      if (minuteInput) {
+        minuteInput.value = checkpoint && checkpoint.minute !== undefined && checkpoint.minute !== null ? String(checkpoint.minute) : '';
+      }
+
+      if (secondInput) {
+        secondInput.value = checkpoint && checkpoint.second !== undefined && checkpoint.second !== null ? String(checkpoint.second) : '';
+      }
+    });
+  } catch (error) {
+    console.warn('Unable to load checkpoints', error);
+  }
 }
 
 function initCheckpointInputs() {
@@ -273,16 +335,7 @@ function readCheckpoints() {
   }
 }
 
-function startMission() {
-  readCheckpoints();
-
-  if (checkpoints.length === 0) {
-    return;
-  }
-
-  appState = 'RUNNING';
-  currentCheckpointIndex = 0;
-
+function showHomeScreen() {
   if (setupScreen) {
     setupScreen.hidden = true;
   }
@@ -293,6 +346,55 @@ function startMission() {
 
   if (finishScreen) {
     finishScreen.hidden = true;
+  }
+
+  if (countdownElement) {
+    countdownElement.hidden = true;
+    countdownElement.textContent = '00:00.00';
+  }
+
+  if (coLabelElement) {
+    coLabelElement.textContent = '';
+  }
+
+  if (coTimeElement) {
+    coTimeElement.textContent = '';
+  }
+}
+
+function showSetupScreen() {
+  if (setupScreen) {
+    setupScreen.hidden = false;
+  }
+
+  if (runScreen) {
+    runScreen.hidden = true;
+  }
+
+  if (finishScreen) {
+    finishScreen.hidden = true;
+  }
+
+  if (countdownElement) {
+    countdownElement.hidden = true;
+  }
+}
+
+function startMission() {
+  saveCheckpointInputsToStorage();
+  readCheckpoints();
+
+  if (checkpoints.length === 0) {
+    return;
+  }
+
+  appState = 'RUNNING';
+  currentCheckpointIndex = 0;
+
+  showHomeScreen();
+
+  if (countdownElement) {
+    countdownElement.hidden = false;
   }
 
   showCurrentCheckpoint();
@@ -368,18 +470,7 @@ function finishMission() {
 
 function resetMission() {
   appState = 'SETUP';
-
-  if (setupScreen) {
-    setupScreen.hidden = false;
-  }
-
-  if (runScreen) {
-    runScreen.hidden = true;
-  }
-
-  if (finishScreen) {
-    finishScreen.hidden = true;
-  }
+  showSetupScreen();
 
   for (let index = 1; index <= 6; index += 1) {
     const hourInput = document.getElementById(`co${index}hh`);
@@ -403,6 +494,12 @@ function resetMission() {
   currentCheckpointIndex = 0;
   currentTargetTimestamp = 0;
 
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.warn('Unable to clear checkpoints', error);
+  }
+
   if (countdownElement) {
     countdownElement.textContent = '00:00.00';
   }
@@ -425,6 +522,10 @@ if (startButton) {
   startButton.addEventListener('click', startMission);
 }
 
+if (homeButton) {
+  homeButton.addEventListener('click', showSetupScreen);
+}
+
 const resetButton = document.getElementById('resetButton');
 
 if (resetButton) {
@@ -432,5 +533,6 @@ if (resetButton) {
 }
 
 initCheckpointInputs();
-resetMission();
+loadCheckpointInputsFromStorage();
+showHomeScreen();
 startClock();

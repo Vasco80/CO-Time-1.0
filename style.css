@@ -5,7 +5,7 @@
   --border: rgba(255, 255, 255, 0.15);
   --panel: rgba(255, 255, 255, 0.04);
   --green: #00d84a;
---yellow: #ffd400;
+--yellow: #c9d222;
 --orange: #ff8c00;
 --red: #ff0000;
 }
@@ -46,6 +46,12 @@ user-select: none;
   flex-direction: column;
   align-items: center;
   gap: clamp(16px, 3vw, 30px);
+}
+
+#setupScreen[hidden],
+#runScreen[hidden],
+#finishScreen[hidden] {
+  display: none !important;
 }
 
 h1 {
@@ -186,24 +192,60 @@ h1 {
     padding-bottom: calc(6vh + env(safe-area-inset-bottom));
 }
 
-#runScreen[hidden],
-#finishScreen[hidden] {
-    display: none !important;
-}
-
 .display {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 24px;
-    transform: translateY(6vh);
+    min-height: 100%;
 }
 
 #clock {
     font-size: clamp(3.5rem, 13vw, 7rem);
     font-weight: 700;
     text-align: center;
+}
+
+#homeControls {
+    position: fixed;
+    left: clamp(20px, 3vw, 30px);
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.2vw, 16px);
+    justify-content: flex-start;
+    z-index: 2;
+}
+
+#homeCoButton {
+    width: clamp(56px, 12vw, 74px);
+    height: clamp(56px, 12vw, 74px);
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #000000;
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    touch-action: manipulation;
+    flex-shrink: 0;
+}
+
+#countdown {
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    min-width: clamp(96px, 20vw, 132px);
+    text-align: left;
+    line-height: 1;
+}
+
+.operational {
+    display: none;
 }
 
 #coLabel {
@@ -215,11 +257,6 @@ h1 {
 
 #coTime {
     font-size: clamp(2rem, 6vw, 3.5rem);
-}
-
-#countdown {
-    font-size: clamp(2.8rem, 8vw, 5rem);
-    font-weight: 700;
 }
 
 #progress {
@@ -245,9 +282,4 @@ h1 {
 
 #flash.flashOn {
     opacity: 0.65;
-}
-#setupScreen[hidden],
-#runScreen[hidden],
-#finishScreen[hidden] {
-    display: none !important;
 }
