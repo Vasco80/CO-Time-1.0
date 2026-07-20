@@ -283,3 +283,142 @@ h1 {
 #flash.flashOn {
     opacity: 0.65;
 }
+
+#setupButton {
+    position: fixed;
+    right: clamp(16px, 3vw, 24px);
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: clamp(56px, 12vw, 74px);
+    height: clamp(56px, 12vw, 74px);
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #000000;
+    font-size: clamp(1.25rem, 3vw, 1.55rem);
+    font-weight: 800;
+    cursor: pointer;
+    touch-action: manipulation;
+    z-index: 5;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+#setupModal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 10;
+}
+
+#setupModal[hidden] {
+    display: none !important;
+}
+
+.modalDialog {
+    width: min(100%, 420px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: rgba(10, 10, 10, 0.96);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+}
+
+.modalHeader {
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.modalContent {
+    padding: 18px 20px 20px;
+}
+
+.syncSection h3 {
+    margin: 0 0 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.syncControl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.syncControl:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.syncControlLabel {
+    font-size: 0.95rem;
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.syncButtons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.syncButton {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #111111;
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.syncValue {
+    min-width: 36px;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.modalActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 20px 20px;
+}
+
+.modalActions button {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #111111;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0 14px;
+    cursor: pointer;
+}
+
+.modalActions button:first-child {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}

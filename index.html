@@ -163,6 +163,55 @@
 
     </main>
 
+    <button id="setupButton" type="button" aria-label="Apri setup">⚙️</button>
+
+    <div id="setupModal" hidden>
+        <div class="modalDialog" role="dialog" aria-modal="true" aria-labelledby="setupModalTitle">
+            <div class="modalHeader">
+                <h2 id="setupModalTitle">Setup</h2>
+            </div>
+
+            <div class="modalContent">
+                <div class="syncSection">
+                    <h3>SINCRONIZZAZIONE ORARIO</h3>
+
+                    <div class="syncControl">
+                        <span class="syncControlLabel">Minuti</span>
+                        <div class="syncButtons">
+                            <button class="syncButton" type="button" data-sync-unit="minutes" data-sync-step="-1">-</button>
+                            <span id="syncMinutesValue" class="syncValue">0</span>
+                            <button class="syncButton" type="button" data-sync-unit="minutes" data-sync-step="1">+</button>
+                        </div>
+                    </div>
+
+                    <div class="syncControl">
+                        <span class="syncControlLabel">Secondi</span>
+                        <div class="syncButtons">
+                            <button class="syncButton" type="button" data-sync-unit="seconds" data-sync-step="-1">-</button>
+                            <span id="syncSecondsValue" class="syncValue">0</span>
+                            <button class="syncButton" type="button" data-sync-unit="seconds" data-sync-step="1">+</button>
+                        </div>
+                    </div>
+
+                    <div class="syncControl">
+                        <span class="syncControlLabel">Centesimi</span>
+                        <div class="syncButtons">
+                            <button class="syncButton" type="button" data-sync-unit="centiseconds" data-sync-step="-1">-</button>
+                            <span id="syncCentisecondsValue" class="syncValue">0</span>
+                            <button class="syncButton" type="button" data-sync-unit="centiseconds" data-sync-step="1">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modalActions">
+                <button id="saveSyncButton" type="button">Salva</button>
+                <button id="resetSyncButton" type="button">Azzera sincronizzazione</button>
+                <button id="closeSetupModalButton" type="button">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 
 </body>

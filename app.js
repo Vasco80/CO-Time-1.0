@@ -9,13 +9,22 @@ const setupScreen = document.getElementById('setupScreen');
 const runScreen = document.getElementById('runScreen');
 const finishScreen = document.getElementById('finishScreen');
 const homeButton = document.getElementById('homeCoButton');
+const setupButton = document.getElementById('setupButton');
+const setupModal = document.getElementById('setupModal');
+const saveSyncButton = document.getElementById('saveSyncButton');
+const resetSyncButton = document.getElementById('resetSyncButton');
+const closeSetupModalButton = document.getElementById('closeSetupModalButton');
+const finishClockElement = document.getElementById('finishClock');
 const STORAGE_KEY = 'co-time-checkpoints';
+const SYNC_STORAGE_KEY = 'co-time-sync-offset';
 
 let checkpoints = [];
 let currentCheckpointIndex = 0;
 let appState = 'SETUP';
 let currentTargetTimestamp = 0;
 let checkpointInputFields = [];
+let timeOffsetMs = 0;
+let syncOffsetValues = { minutes: 0, seconds: 0, centiseconds: 0 };
 
 function setFieldInvalid(field) {
   field.style.borderColor = '#ff4d4f';
@@ -188,11 +197,100 @@ function initCheckpointInputs() {
   checkpointInputFields.forEach(configureCheckpointInput);
 }
 
+function getOffsetMillisecondsFromValues(values) {
+  return (Number(values.minutes) || 0) * 60 * 1000 + (Number(values.seconds) || 0) * 1000 + (Number(values.centiseconds) || 0) * 10;
+}
+
+function getOffsetValuesFromMilliseconds(offsetMs) {
+  const totalCentiseconds = Math.trunc(offsetMs / 10);
+  const minutes = Math.trunc(totalCentiseconds / 6000);
+  const seconds = Math.trunc((totalCentiseconds % 6000) / 100);
+  const centiseconds = totalCentiseconds % 100;
+
+  return { minutes, seconds, centiseconds };
+}
+
+function getEffectiveTime() {
+  return Date.now() + timeOffsetMs;
+}
+
+function updateSyncControls() {
+  const minutesValueElement = document.getElementById('syncMinutesValue');
+  const secondsValueElement = document.getElementById('syncSecondsValue');
+  const centisecondsValueElement = document.getElementById('syncCentisecondsValue');
+
+  if (minutesValueElement) {
+    minutesValueElement.textContent = String(syncOffsetValues.minutes);
+  }
+
+  if (secondsValueElement) {
+    secondsValueElement.textContent = String(syncOffsetValues.seconds);
+  }
+
+  if (centisecondsValueElement) {
+    centisecondsValueElement.textContent = String(syncOffsetValues.centiseconds);
+  }
+}
+
+function applyTimeOffset() {
+  timeOffsetMs = getOffsetMillisecondsFromValues(syncOffsetValues);
+  updateSyncControls();
+
+  if (clockElement) {
+    updateClock();
+  }
+}
+
+function adjustSyncOffset(unit, delta) {
+  syncOffsetValues[unit] = (syncOffsetValues[unit] || 0) + delta;
+  applyTimeOffset();
+}
+
+function saveSyncOffsetToStorage() {
+  try {
+    localStorage.setItem(SYNC_STORAGE_KEY, JSON.stringify(syncOffsetValues));
+  } catch (error) {
+    console.warn('Unable to save time offset', error);
+  }
+}
+
+function loadSyncOffsetFromStorage() {
+  try {
+    const savedValue = localStorage.getItem(SYNC_STORAGE_KEY);
+
+    if (!savedValue) {
+      return;
+    }
+
+    const parsedValue = JSON.parse(savedValue);
+
+    if (parsedValue && typeof parsedValue === 'object') {
+      syncOffsetValues = {
+        minutes: Number(parsedValue.minutes) || 0,
+        seconds: Number(parsedValue.seconds) || 0,
+        centiseconds: Number(parsedValue.centiseconds) || 0,
+      };
+      applyTimeOffset();
+      return;
+    }
+
+    const numericValue = Number.parseInt(savedValue, 10);
+
+    if (!Number.isNaN(numericValue)) {
+      syncOffsetValues = getOffsetValuesFromMilliseconds(numericValue);
+      applyTimeOffset();
+    }
+  } catch (error) {
+    console.warn('Unable to load time offset', error);
+  }
+}
+
 function formatClock(now) {
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  const centiseconds = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0');
+  const date = now instanceof Date ? now : new Date(now);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const centiseconds = String(Math.floor(date.getMilliseconds() / 10)).padStart(2, '0');
 
   return `${hours}:${minutes}:${seconds}.${centiseconds}`;
 }
@@ -202,8 +300,12 @@ function updateClock() {
     return;
   }
 
-  const now = new Date();
+  const now = new Date(getEffectiveTime());
   clockElement.textContent = formatClock(now);
+
+  if (finishClockElement) {
+    finishClockElement.textContent = formatClock(now);
+  }
 }
 
 function updateProgress(remainingMs) {
@@ -225,10 +327,11 @@ function updateProgress(remainingMs) {
 }
 
 function buildTargetTimestamp(hour, minute, second) {
-  const target = new Date();
+  const referenceTime = getEffectiveTime();
+  const target = new Date(referenceTime);
   target.setHours(hour, minute, second, 0);
 
-  if (target.getTime() <= Date.now()) {
+  if (target.getTime() <= referenceTime) {
     target.setDate(target.getDate() + 1);
   }
 
@@ -250,7 +353,7 @@ function updateCountdown() {
     return;
   }
 
-  const remainingMs = currentTargetTimestamp - Date.now();
+  const remainingMs = currentTargetTimestamp - getEffectiveTime();
 
   if (remainingMs <= 0) {
     if (!checkpoint.triggered) {
@@ -528,11 +631,58 @@ if (homeButton) {
 
 const resetButton = document.getElementById('resetButton');
 
+if (setupButton) {
+  setupButton.addEventListener('click', () => {
+    if (setupModal) {
+      setupModal.hidden = false;
+    }
+  });
+}
+
+if (setupModal) {
+  setupModal.addEventListener('click', (event) => {
+    if (event.target === setupModal) {
+      setupModal.hidden = true;
+    }
+  });
+}
+
+if (closeSetupModalButton) {
+  closeSetupModalButton.addEventListener('click', () => {
+    if (setupModal) {
+      setupModal.hidden = true;
+    }
+  });
+}
+
+if (saveSyncButton) {
+  saveSyncButton.addEventListener('click', saveSyncOffsetToStorage);
+}
+
+if (resetSyncButton) {
+  resetSyncButton.addEventListener('click', () => {
+    syncOffsetValues = { minutes: 0, seconds: 0, centiseconds: 0 };
+    applyTimeOffset();
+  });
+}
+
+document.querySelectorAll('[data-sync-unit]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const unit = button.getAttribute('data-sync-unit');
+    const step = Number.parseInt(button.getAttribute('data-sync-step') || '1', 10);
+
+    if (unit && Object.prototype.hasOwnProperty.call(syncOffsetValues, unit)) {
+      adjustSyncOffset(unit, step);
+    }
+  });
+});
+
 if (resetButton) {
   resetButton.addEventListener('click', resetMission);
 }
 
 initCheckpointInputs();
 loadCheckpointInputsFromStorage();
+loadSyncOffsetFromStorage();
 showHomeScreen();
 startClock();
