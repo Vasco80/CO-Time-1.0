@@ -202,10 +202,31 @@ h1 {
     min-height: 100%;
 }
 
+#clockWrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
 #clock {
     font-size: clamp(3.5rem, 13vw, 7rem);
     font-weight: 700;
     text-align: center;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 2;
+}
+
+#clockWrapper::before {
+    content: "";
+    position: absolute;
+    inset: -10px -14px;
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 18px;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.3);
+    z-index: 1;
 }
 
 #homeControls {
@@ -235,6 +256,14 @@ h1 {
     flex-shrink: 0;
 }
 
+#countdownWrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
 #countdown {
     font-size: clamp(1.2rem, 3vw, 1.7rem);
     font-weight: 600;
@@ -242,6 +271,23 @@ h1 {
     min-width: clamp(96px, 20vw, 132px);
     text-align: left;
     line-height: 1;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.28);
+    background: transparent;
+    border-radius: 0.25em;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+}
+
+#countdownWrapper::before {
+    content: "";
+    position: absolute;
+    inset: -6px -10px;
+    background: rgba(0, 0, 0, 0.88);
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+    z-index: 1;
 }
 
 .operational {
@@ -304,13 +350,14 @@ h1 {
 
 #setupModal {
     position: fixed;
-    inset: 0;
+    inset: auto 16px 90px auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.72);
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0;
+    background: transparent;
     z-index: 10;
+    pointer-events: none;
 }
 
 #setupModal[hidden] {
@@ -318,12 +365,13 @@ h1 {
 }
 
 .modalDialog {
-    width: min(100%, 420px);
+    width: min(100%, 320px);
     border: 1px solid var(--border);
-    border-radius: 24px;
+    border-radius: 20px;
     background: rgba(10, 10, 10, 0.96);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
     overflow: hidden;
+    pointer-events: auto;
 }
 
 .modalHeader {

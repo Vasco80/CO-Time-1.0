@@ -116,15 +116,19 @@
 
     <div class="display">
 
-        <div id="clock">
-            00:00:00.00
+        <div id="clockWrapper" class="clockWrapper">
+            <div id="clock">
+                00:00:00.00
+            </div>
         </div>
 
         <div id="homeControls">
             <button id="homeCoButton" type="button" aria-label="Apri setup CO">CO</button>
+            <div id="countdownWrapper" class="countdownWrapper">
             <div id="countdown" class="homeCountdown" hidden>
                 00:00.00
             </div>
+        </div>
         </div>
 
     </div>
@@ -160,6 +164,8 @@
         <button id="resetButton">
             RESET
         </button>
+
+        <button id="backToHomeButton" type="button" style="margin-top: 12px;">Torna alla schermata principale</button>
 
     </main>
 

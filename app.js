@@ -246,11 +246,31 @@ function adjustSyncOffset(unit, delta) {
   applyTimeOffset();
 }
 
+function readCurrentSyncValuesFromControls() {
+  const minutesValueElement = document.getElementById('syncMinutesValue');
+  const secondsValueElement = document.getElementById('syncSecondsValue');
+  const centisecondsValueElement = document.getElementById('syncCentisecondsValue');
+
+  return {
+    minutes: Number.parseInt(minutesValueElement ? minutesValueElement.textContent : '0', 10) || 0,
+    seconds: Number.parseInt(secondsValueElement ? secondsValueElement.textContent : '0', 10) || 0,
+    centiseconds: Number.parseInt(centisecondsValueElement ? centisecondsValueElement.textContent : '0', 10) || 0,
+  };
+}
+
 function saveSyncOffsetToStorage() {
+  const nextSyncValues = readCurrentSyncValuesFromControls();
+  syncOffsetValues = nextSyncValues;
+  applyTimeOffset();
+
   try {
     localStorage.setItem(SYNC_STORAGE_KEY, JSON.stringify(syncOffsetValues));
   } catch (error) {
     console.warn('Unable to save time offset', error);
+  }
+
+  if (setupModal) {
+    setupModal.hidden = true;
   }
 }
 
@@ -374,6 +394,21 @@ function updateCountdown() {
   const centisecondsText = String(centiseconds).padStart(2, '0');
 
   countdownElement.textContent = `${minutes}:${seconds}.${centisecondsText}`;
+
+  if (remainingMs <= 10000 && remainingMs > 3000) {
+    countdownElement.style.backgroundColor = '#C2410C';
+    countdownElement.style.color = '#FFFFFF';
+    countdownElement.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.28)';
+  } else if (remainingMs <= 3000) {
+    countdownElement.style.backgroundColor = '#B91C1C';
+    countdownElement.style.color = '#FFFFFF';
+    countdownElement.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.3)';
+  } else {
+    countdownElement.style.backgroundColor = 'transparent';
+    countdownElement.style.color = '#f4e15a';
+    countdownElement.style.textShadow = '0 0 6px rgba(244, 225, 90, 0.18)';
+  }
+
   updateProgress(remainingMs);
 }
 
@@ -630,6 +665,7 @@ if (homeButton) {
 }
 
 const resetButton = document.getElementById('resetButton');
+const backToHomeButton = document.getElementById('backToHomeButton');
 
 if (setupButton) {
   setupButton.addEventListener('click', () => {
@@ -656,13 +692,21 @@ if (closeSetupModalButton) {
 }
 
 if (saveSyncButton) {
-  saveSyncButton.addEventListener('click', saveSyncOffsetToStorage);
+  saveSyncButton.addEventListener('click', () => {
+    saveSyncOffsetToStorage();
+  });
 }
 
 if (resetSyncButton) {
   resetSyncButton.addEventListener('click', () => {
     syncOffsetValues = { minutes: 0, seconds: 0, centiseconds: 0 };
     applyTimeOffset();
+
+    try {
+      localStorage.setItem(SYNC_STORAGE_KEY, JSON.stringify(syncOffsetValues));
+    } catch (error) {
+      console.warn('Unable to save time offset', error);
+    }
   });
 }
 
@@ -679,6 +723,13 @@ document.querySelectorAll('[data-sync-unit]').forEach((button) => {
 
 if (resetButton) {
   resetButton.addEventListener('click', resetMission);
+}
+
+if (backToHomeButton) {
+  backToHomeButton.addEventListener('click', () => {
+    appState = 'SETUP';
+    showHomeScreen();
+  });
 }
 
 initCheckpointInputs();
